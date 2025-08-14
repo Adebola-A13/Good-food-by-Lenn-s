@@ -108,8 +108,28 @@ function toggleCart() {
     // Empêcher le scroll du body quand le panier est ouvert
     if (cartSidebar.classList.contains('open')) {
         document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+        document.body.style.height = '100%';
+        
+        // Prévenir le scroll bounce sur iOS
+        document.addEventListener('touchmove', preventScroll, { passive: false });
     } else {
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+        document.body.style.height = '';
+        
+        // Réactiver le scroll
+        document.removeEventListener('touchmove', preventScroll);
+    }
+}
+
+// Fonction pour prévenir le scroll bounce sur mobile
+function preventScroll(e) {
+    const cartItems = document.querySelector('.cart-items');
+    if (!cartItems.contains(e.target)) {
+        e.preventDefault();
     }
 }
 
