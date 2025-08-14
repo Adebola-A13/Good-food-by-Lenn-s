@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title> Formulaire d'enregistrement </title>
+        <link rel="stylesheet" href="style_vote.css">
+    </head>
+    <body class="enregistrement">
+        <section>
+            <div class="container_enregistrement">
+                <h1>ENREGISTRER VOS IDENTIFIANTS POUR LE VOTE</h1>
+                
+                <div class="form-group">
+                    <label>Nom et Prénoms</label>
+                    <input type="text" placeholder="Nom et prénoms">
+                </div>
+
+                <div class="form-group">
+                    <label for="telephone">Numéro de téléphone :</label>
+                    <input type="tel" 
+                           id="telephone" 
+                           name="telephone" 
+                           pattern="01[0-9]{8}" 
+                           placeholder="01XXXXXXXX" 
+                           maxlength="10"
+                           oninput="validatePhone(this)"
+                           required>
+                    <small class="error-message" style="color: rgb(73, 19, 201); display: none;">Le numéro doit commencer par 01 et avoir 10 chiffres</small>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" id="saveBtn" class="save-btn">ENREGISTRER</button>
+                    <button class="quit-btn" onclick="history.back()">QUITTER</button>
+                </div>
+
+                <div class="Attentions">
+                    <p>
+                    <strong> NB :  </strong> Nous vous informons que si un vote à déjà effectuer il ne peux être annuler 
+                    donc veillez être attentifs lors de vos votes et choississez la bonne candidates !!!...
+                    </p>
+                </div>
+
+            </div>
+        </section>
+        <script src="scrypte_vote.js"></script>
+    </body>
+</html>
+

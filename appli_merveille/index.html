@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good food by Lenn's - Délicieuses spécialités du Bénin</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav">
+                <div class="logo">
+                    <h1><i class="fas fa-utensils"></i> Good food by Lenn's</h1>
+                    <p>Délicieuses spécialités du Bénin</p>
+                </div>
+                <div class="cart-icon" onclick="toggleCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Savourez l'authenticité béninoise moderne</h2>
+            <p>Des plats délicieux préparés avec amour et des ingrédients frais</p>
+            <a href="#menu" class="hero-cta shine">
+                <i class="fas fa-utensils"></i>
+                Découvrir notre menu
+            </a>
+            
+            <!-- Menu Categories Preview -->
+            <div class="menu-categories-preview">
+                <div class="category-preview" onclick="scrollToCategory('shawarma')">
+                    <span>Shawarma</span>
+                </div>
+                
+                <div class="category-preview" onclick="scrollToCategory('panini')">
+                    <span>Panini</span>
+                </div>
+                
+                <div class="category-preview" onclick="scrollToCategory('cakes')">
+                    <span>Cakes</span>
+                </div>
+                
+                <div class="category-preview" onclick="scrollToCategory('yaourt')">
+                    <span>Yaourt</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section class="menu" id="menu">
+        <div class="container">
+            <h2 class="section-title">Notre Menu</h2>
+            
+            <!-- Shawarma Section -->
+            <div class="category" id="shawarma-section">
+                <h3 class="category-title"><i class="fas fa-fire"></i> Shawarma</h3>
+                <div class="products-grid">
+                    <div class="product-card" data-category="shawarma" id="shawarma-first">
+                        <div class="badge">Populaire</div>
+                        <div class="product-image shine">
+                            <img src="images/Shawarma au Bœuf.jpeg" alt="Shawarma au Bœuf" loading="lazy">
+                        </div>
+                        <div class="product-info">
+                            <h4>Shawarma au Bœuf</h4>
+                            <p>Délicieux shawarma avec de la viande de bœuf tendre et des légumes frais</p>
+                            <div class="price">2000 FCFA</div>
+                            <button class="add-to-cart shine" onclick="addToCart('Shawarma au Bœuf', 2000)">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="shawarma">
+                        <div class="product-image">
+                            <img src="images/Shawarma au Porc" alt="Shawarma au Porc" loading="lazy">
+                        </div>
+                        <div class="product-info">
+                            <h4>Shawarma au Porc</h4>
+                            <p>Savoureux shawarma à la viande de porc avec sauce spéciale</p>
+                            <div class="price">2200 FCFA</div>
+                            <button class="add-to-cart" onclick="addToCart('Shawarma au Porc', 2200)">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panini Section -->
+            <div class="category" id="panini-section">
+                <h3 class="category-title"><i class="fas fa-bread-slice"></i> Panini</h3>
+                <div class="products-grid">
+                    <div class="product-card" data-category="panini" id="panini-first">
+                        <div class="product-image">
+                            <img src="images/Panini Jambon au Poulet.jpeg" alt="Panini Jambon au Poulet" loading="lazy">
+                        </div>
+                        <div class="product-info">
+                            <h4>Panini Jambon au Poulet</h4>
+                            <p>Panini croustillant avec jambon de poulet et fromage</p>
+                            <div class="price">1800 FCFA</div>
+                            <button class="add-to-cart" onclick="addToCart('Panini Jambon au Poulet', 1800)">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="panini">
+                        <div class="product-image">
+                            <img src="images/Panini Jambon au Porc.jpeg" alt="Panini Jambon au Porc" loading="lazy">
+                        </div>
+                        <div class="product-info">
+                            <h4>Panini Jambon au Porc</h4>
+                            <p>Délicieux panini avec jambon de porc et légumes frais</p>
+                            <div class="price">2000 FCFA</div>
+                            <button class="add-to-cart" onclick="addToCart('Panini Jambon au Porc', 2000)">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="panini">
+                        <div class="product-image">
+                            <img src="images/Panini Viande de Porc.jpeg" alt="Panini Viande de Porc" loading="lazy">
+                        </div>
+                        <div class="product-info">
+                            <h4>Panini Viande de Porc</h4>
+                            <p>Panini garni avec de la viande de porc grillée</p>
+                            <div class="price">2100 FCFA</div>
+                            <button class="add-to-cart" onclick="addToCart('Panini Viande de Porc', 2100)">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="panini">
+                        <div class="product-image">
+                            <img src="images/Panini Viande de Bœuf.jpeg" alt="Panini Viande de Bœuf" loading="lazy">
+                        </div>
+                        <div class="product-info">
+                            <h4>Panini Viande de Bœuf</h4>
+                            <p>Panini succulent avec de la viande de bœuf tendre</p>
+                            <div class="price">2300 FCFA</div>
+                            <button class="add-to-cart" onclick="addToCart('Panini Viande de Bœuf', 2300)">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cakes Section -->
+            <div class="category" id="cakes-section">
+                <h3 class="category-title"><i class="fas fa-birthday-cake"></i> Cakes</h3>
+                <div class="products-grid">
+                    <div class="product-card" data-category="cakes" id="cakes-first">
+                        <div class="product-image">
+                            <img src="images/Cake Marbré.jpeg" alt="Cake Marbré" loading="lazy">
+                        </div>
+                        <div class="product-info">
+                            <h4>Cake Marbré</h4>
+                            <p>Délicieux cake marbré vanille-chocolat fait maison</p>
+                            <div class="price">1500 FCFA</div>
+                            <button class="add-to-cart" onclick="addToCart('Cake Marbré', 1500)">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="cakes">
+                        <div class="product-image">
+                            <img src="images/Cake à la Banane.jpeg" alt="Cake à la Banane" loading="lazy">
+                        </div>
+                        <div class="product-info">
+                            <h4>Cake à la Banane</h4>
+                            <p>Moelleux cake à la banane, parfait pour le goûter</p>
+                            <div class="price">1400 FCFA</div>
+                            <button class="add-to-cart" onclick="addToCart('Cake à la Banane', 1400)">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yaourt Section -->
+            <div class="category" id="yaourt-section">
+                <h3 class="category-title"><i class="fas fa-ice-cream"></i> Yaourt</h3>
+                <div class="products-grid">
+                    <div class="product-card" data-category="yaourt" id="yaourt-first">
+                        <div class="product-image">
+                            <img src="images/Yaourt Simple.jpeg" alt="Yaourt Simple" loading="lazy">
+                        </div>
+                        <div class="product-info">
+                            <h4>Yaourt Simple</h4>
+                            <p>Yaourt nature fait maison, onctueux et rafraîchissant</p>
+                            <div class="price">800 FCFA</div>
+                            <button class="add-to-cart" onclick="addToCart('Yaourt Simple', 800)">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card" data-category="yaourt">
+                        <div class="badge" style="background: linear-gradient(135deg, #f39c12, #e67e22);">Spécialité</div>
+                        <div class="product-image shine">
+                            <img src="images/Dèguè au Couscous.jpeg" alt="Dèguè au Couscous" loading="lazy">
+                        </div>
+                        <div class="product-info">
+                            <h4>Dèguè au Couscous</h4>
+                            <p>Spécialité béninoise : yaourt avec couscous et épices</p>
+                            <div class="price">1200 FCFA</div>
+                            <button class="add-to-cart shine" onclick="addToCart('Dèguè au Couscous', 1200)">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart"></i> Mon Panier</h3>
+            <button class="close-cart" onclick="toggleCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <p class="empty-cart">Votre panier est vide</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <strong>Total: <span id="cartTotal">0</span> FCFA</strong>
+            </div>
+            <button class="checkout-btn shine" onclick="checkout()" id="checkoutBtn" disabled>
+                <i class="fab fa-whatsapp"></i> Commander sur WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Good food by Lenn's</h4>
+                    <p>Votre restaurant de confiance au Bénin pour des plats délicieux et authentiques.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-phone"></i> +229 41 24 00 11</p>
+                    <p><i class="fas fa-phone"></i> +229 96 99 21 13</p>
+                    <p><i class="fab fa-whatsapp"></i> WhatsApp: +229 41 24 00 11</p>
+                    <p><i class="fab fa-whatsapp"></i> WhatsApp: +229 96 99 21 13</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Porto-Novo, Bénin</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Horaires</h4>
+                    <p>Lundi - Dimanche: 8h00 - 22h00</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Good food by Lenn's. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

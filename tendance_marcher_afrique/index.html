@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AfriTrend - Tendances des produits en Afrique</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .trend-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 0.5rem;
+        }
+        .search-tabs .active {
+            border-bottom: 2px solid #3b82f6;
+            color: #3b82f6;
+        }
+        #image-preview {
+            display: none;
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-chart-line text-blue-600 text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-blue-600">AfriTrend</span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="#" class="border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Accueil
+                        </a>
+                        <a href="#trends" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Tendances
+                        </a>
+                        <a href="#sectors" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Secteurs
+                        </a>
+                        <a href="#post" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Poster un produit
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                        Connexion
+                    </button>
+                </div>
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false" id="mobile-menu-button">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div class="hidden sm:hidden" id="mobile-menu">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="#" class="bg-blue-50 border-blue-500 text-blue-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Accueil</a>
+                <a href="#trends" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Tendances</a>
+                <a href="#sectors" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Secteurs</a>
+                <a href="#post" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Poster un produit</a>
+                <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Connexion</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Search -->
+    <div class="gradient-bg">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 lg:py-16">
+            <div class="lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
+                <div>
+                    <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+                        Découvrez les tendances du marché en Afrique
+                    </h1>
+                    <p class="mt-3 max-w-3xl text-lg text-gray-500">
+                        Analysez les produits les plus populaires au Bénin et dans toute l'Afrique. Boostez votre business en suivant les tendances actuelles.
+                    </p>
+                    
+                    <!-- Search Section -->
+                    <div class="mt-8 bg-white rounded-lg shadow-md p-4">
+                        <div class="flex border-b search-tabs">
+                            <button id="text-search-tab" class="px-4 py-2 font-medium text-gray-500 active">Recherche par texte</button>
+                            <button id="image-search-tab" class="px-4 py-2 font-medium text-gray-500">Recherche par image</button>
+                        </div>
+                        
+                        <!-- Text Search -->
+                        <div id="text-search" class="mt-4">
+                            <div class="flex">
+                                <input type="text" id="product-search" placeholder="Rechercher un produit..." class="flex-1 min-w-0 block w-full px-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <button id="search-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    <i class="fas fa-search mr-2"></i> Rechercher
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Image Search -->
+                        <div id="image-search" class="mt-4 hidden">
+                            <div class="flex flex-col">
+                                <div class="flex">
+                                    <label for="image-upload" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white cursor-pointer">
+                                        <span id="file-label">Télécharger une image</span>
+                                        <input type="file" id="image-upload" accept="image/*" class="hidden">
+                                    </label>
+                                    <button id="search-image-button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <i class="fas fa-search mr-2"></i> Rechercher
+                                    </button>
+                                </div>
+                                <img id="image-preview" class="rounded-md border border-gray-300">
+                            </div>
+                            <p class="mt-2 text-sm text-gray-500">Téléchargez une photo du produit que vous recherchez</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 sm:flex">
+                        <div class="rounded-md shadow">
+                            <a href="#trends" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10">
+                                Explorer les tendances
+                            </a>
+                        </div>
+                        <div class="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
+                            <a href="#post" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-600 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10">
+                                Poster un produit
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 lg:mt-0">
+                    <div class="relative">
+                        <div class="relative rounded-lg shadow-lg overflow-hidden">
+                            <img class="w-full h-auto" src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Marché africain">
+                            <div class="absolute inset-0 bg-blue-600 opacity-20"></div>
+                        </div>
+                        <div class="absolute -bottom-8 -right-8 bg-white p-4 rounded-lg shadow-lg">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-blue-500 rounded-md p-3">
+                                    <i class="fas fa-chart-bar text-white text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-500">Tendance du mois</p>
+                                    <p class="text-lg font-semibold text-gray-900">Produits agricoles</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trends Section -->
+    <div id="trends" class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:text-center">
+                <h2 class="text-base text-blue-600 font-semibold tracking-wide uppercase">Tendances actuelles</h2>
+                <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    Les produits les plus recherchés
+                </p>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+                    Découvrez ce qui se vend le plus en ce moment dans différents secteurs et régions.
+                </p>
+            </div>
+
+            <div class="mt-10">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-medium text-gray-900">Filtrer par :</h3>
+                    <div class="flex space-x-4">
+                        <select id="country-select" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                            <option value="all">Tous les pays</option>
+                            <option value="benin">Bénin</option>
+                            <option value="nigeria">Nigeria</option>
+                            <option value="ghana">Ghana</option>
+                            <option value="cote-ivoire">Côte d'Ivoire</option>
+                            <option value="senegal">Sénégal</option>
+                        </select>
+                        <select id="sector-select" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                            <option value="all">Tous les secteurs</option>
+                            <option value="agriculture">Agriculture</option>
+                            <option value="textile">Textile</option>
+                            <option value="technologie">Technologie</option>
+                            <option value="cosmetique">Cosmétique</option>
+                            <option value="alimentaire">Alimentaire</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3" id="trends-container">
+                    <!-- Trends will be loaded here by JavaScript -->
+                </div>
+
+                <div class="mt-8 text-center">
+                    <button id="load-more" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Charger plus de tendances
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Visualization -->
+    <div class="bg-gray-100 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:text-center mb-8">
+                <h2 class="text-base text-blue-600 font-semibold tracking-wide uppercase">Répartition géographique</h2>
+                <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    Où sont les tendances?
+                </p>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+                    Visualisez la popularité des produits à travers l'Afrique.
+                </p>
+            </div>
+            
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <!-- Sectors Section -->
+    <div id="sectors" class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:text-center">
+                <h2 class="text-base text-blue-600 font-semibold tracking-wide uppercase">Secteurs d'activité</h2>
+                <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    Explorez par secteur économique
+                </p>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+                    Découvrez les tendances spécifiques à chaque secteur d'activité.
+                </p>
+            </div>
+
+            <div class="mt-10">
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    <div class="bg-blue-50 rounded-lg p-6 text-center">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-md bg-blue-600 text-white">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h3 class="mt-4 text-lg font-medium text-gray-900">Agriculture</h3>
+                        <p class="mt-2 text-base text-gray-500">
+                            Produits agricoles, transformation alimentaire et équipements.
+                        </p>
+                        <div class="mt-4">
+                            <a href="#" class="text-blue-600 hover:text-blue-500 font-medium">
+                                Voir tendances <span aria-hidden="true">&rarr;</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 rounded-lg p-6 text-center">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-md bg-green-600 text-white">
+                            <i class="fas fa-tshirt"></i>
+                        </div>
+                        <h3 class="mt-4 text-lg font-medium text-gray-900">Textile</h3>
+                        <p class="mt-2 text-base text-gray-500">
+                            Vêtements, tissus traditionnels et accessoires de mode.
+                        </p>
+                        <div class="mt-4">
+                            <a href="#" class="text-green-600 hover:text-green-500 font-medium">
+                                Voir tendances <span aria-hidden="true">&rarr;</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-50 rounded-lg p-6 text-center">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-md bg-purple-600 text-white">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3 class="mt-4 text-lg font-medium text-gray-900">Technologie</h3>
+                        <p class="mt-2 text-base text-gray-500">
+                            Smartphones, gadgets et solutions technologiques.
+                        </p>
+                        <div class="mt-4">
+                            <a href="#" class="text-purple-600 hover:text-purple-500 font-medium">
+                                Voir tendances <span aria-hidden="true">&rarr;</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-50 rounded-lg p-6 text-center">
+                        <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-md bg-yellow-600 text-white">
+                            <i class="fas fa-spa"></i>
+                        </div>
+                        <h3 class="mt-4 text-lg font-medium text-gray-900">Cosmétique</h3>
+                        <p class="mt-2 text-base text-gray-500">
+                            Produits de beauté, soins capillaires et naturels.
+                        </p>
+                        <div class="mt-4">
+                            <a href="#" class="text-yellow-600 hover:text-yellow-500 font-medium">
+                                Voir tendances <span aria-hidden="true">&rarr;</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Product Section -->
+    <div id="post" class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
+                <div class="lg:col-start-2">
+                    <h2 class="text-base text-blue-600 font-semibold tracking-wide uppercase">Boostez votre business</h2>
+                    <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                        Faites connaître vos produits
+                    </p>
+                    <p class="mt-4 text-lg text-gray-500">
+                        Postez vos produits sur AfriTrend et attirez plus de clients vers votre boutique. Notre plateforme vous permet de toucher des milliers de clients potentiels à travers l'Afrique.
+                    </p>
+                    <div class="mt-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-blue-500 rounded-md p-2">
+                                <i class="fas fa-chart-line text-white"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-base font-medium text-gray-900">Augmentez votre visibilité</p>
+                                <p class="text-sm text-gray-500">Apparaissez dans les recherches de produits tendance</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <div class="flex-shrink-0 bg-blue-500 rounded-md p-2">
+                                <i class="fas fa-users text-white"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-base font-medium text-gray-900">Touchez plus de clients</p>
+                                <p class="text-sm text-gray-500">Atteignez des clients dans toute l'Afrique</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center mt-4">
+                            <div class="flex-shrink-0 bg-blue-500 rounded-md p-2">
+                                <i class="fas fa-bell text-white"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-base font-medium text-gray-900">Notifications intelligentes</p>
+                                <p class="text-sm text-gray-500">Soyez alerté quand votre produit devient tendance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 lg:mt-0 lg:col-start-1">
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Poster un nouveau produit</h3>
+                        <form id="product-form" class="space-y-4">
+                            <div>
+                                <label for="product-name" class="block text-sm font-medium text-gray-700">Nom du produit</label>
+                                <input type="text" id="product-name" name="product-name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            </div>
+                            <div>
+                                <label for="product-description" class="block text-sm font-medium text-gray-700">Description</label>
+                                <textarea id="product-description" name="product-description" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                            </div>
+                            <div>
+                                <label for="product-category" class="block text-sm font-medium text-gray-700">Catégorie</label>
+                                <select id="product-category" name="product-category" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <option value="agriculture">Agriculture</option>
+                                    <option value="textile">Textile</option>
+                                    <option value="technologie">Technologie</option>
+                                    <option value="cosmetique">Cosmétique</option>
+                                    <option value="alimentaire">Alimentaire</option>
+                                    <option value="autre">Autre</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="product-country" class="block text-sm font-medium text-gray-700">Pays</label>
+                                <select id="product-country" name="product-country" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                    <option value="benin">Bénin</option>
+                                    <option value="nigeria">Nigeria</option>
+                                    <option value="ghana">Ghana</option>
+                                    <option value="cote-ivoire">Côte d'Ivoire</option>
+                                    <option value="senegal">Sénégal</option>
+                                    <option value="autre">Autre pays africain</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="product-image" class="block text-sm font-medium text-gray-700">Image du produit</label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                    <div class="space-y-1 text-center">
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                <span>Téléverser une image</span>
+                                                <input id="file-upload" name="file-upload" type="file" class="sr-only">
+                                            </label>
+                                            <p class="pl-1">ou glisser-déposer</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500">PNG, JPG jusqu'à 2MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="product-price" class="block text-sm font-medium text-gray-700">Prix (FCFA)</label>
+                                <input type="number" id="product-price" name="product-price" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            </div>
+                            <div>
+                                <label for="contact-info" class="block text-sm font-medium text-gray-700">Coordonnées</label>
+                                <input type="text" id="contact-info" name="contact-info" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Email ou numéro de téléphone">
+                            </div>
+                            <div class="flex items-center">
+                                <input id="terms" name="terms" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="terms" class="ml-2 block text-sm text-gray-700">
+                                    J'accepte les <a href="#" class="text-blue-600 hover:text-blue-500">conditions d'utilisation</a>
+                                </label>
+                            </div>
+                            <div>
+                                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Poster le produit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials -->
+    <div class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:text-center">
+                <h2 class="text-base text-blue-600 font-semibold tracking-wide uppercase">Témoignages</h2>
+                <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    Ce que disent nos utilisateurs
+                </p>
+            </div>
+
+            <div class="mt-10">
+                <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <img class="h-12 w-12 rounded-full" src="https://randomuser.me/api/portraits/women/32.jpg" alt="Fatou">
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-900">Fatou Diallo</h4>
+                                <p class="text-blue-600">Commerçante, Cotonou</p>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-gray-500">
+                            "Grâce à AfriTrend, j'ai pu identifier les produits cosmétiques naturels qui se vendaient le mieux. J'ai ajusté mon stock en conséquence et mes ventes ont augmenté de 40% en 3 mois."
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <img class="h-12 w-12 rounded-full" src="https://randomuser.me/api/portraits/men/42.jpg" alt="Koffi">
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-900">Koffi Agbessi</h4>
+                                <p class="text-blue-600">Agriculteur, Abomey-Calavi</p>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-gray-500">
+                            "En postant mes produits agricoles sur AfriTrend, j'ai trouvé des acheteurs réguliers dans plusieurs pays. La plateforme m'a ouvert de nouveaux marchés que je ne connaissais pas."
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <img class="h-12 w-12 rounded-full" src="https://randomuser.me/api/portraits/women/68.jpg" alt="Amina">
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-900">Amina Oumarou</h4>
+                                <p class="text-blue-600">Designer textile, Niamey</p>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-gray-500">
+                            "Les analyses de tendances m'ont aidé à comprendre quels motifs et couleurs de tissus étaient populaires dans différentes régions. Cela a transformé ma petite entreprise."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="bg-blue-700 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:flex lg:items-center lg:justify-between">
+                <div class="lg:w-0 lg:flex-1">
+                    <h2 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+                        Recevez les tendances par email
+                    </h2>
+                    <p class="mt-3 max-w-3xl text-lg leading-6 text-blue-200">
+                        Abonnez-vous à notre newsletter hebdomadaire pour recevoir les dernières tendances directement dans votre boîte mail.
+                    </p>
+                </div>
+                <div class="mt-8 lg:mt-0 lg:ml-8">
+                    <form class="sm:flex">
+                        <label for="email-address" class="sr-only">Adresse email</label>
+                        <input id="email-address" name="email-address" type="email" autocomplete="email" required class="w-full px-5 py-3 border border-transparent placeholder-gray-500 focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-700 focus:ring-white focus:border-white sm:max-w-xs rounded-md" placeholder="Votre email">
+                        <div class="mt-3 rounded-md shadow sm:mt-0 sm:ml-3 sm:flex-shrink-0">
+                            <button type="submit" class="w-full flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-700 focus:ring-white">
+                                S'abonner
+                            </button>
+                        </div>
+                    </form>
+                    <p class="mt-3 text-sm text-blue-200">
+                        Nous respectons votre vie privée. Vous pouvez vous désabonner à tout moment.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-300 tracking-wider uppercase">AfriTrend</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">À propos</a></li>
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Carrières</a></li>
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Blog</a></li>
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Presse</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-300 tracking-wider uppercase">Ressources</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Documentation</a></li>
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Guides</a></li>
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">API</a></li>
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Communauté</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-300 tracking-wider uppercase">Légal</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Confidentialité</a></li>
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Conditions</a></li>
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Politique cookies</a></li>
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Licences</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-300 tracking-wider uppercase">Contact</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Support</a></li>
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Ventes</a></li>
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Partenariats</a></li>
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white">Visitez nos bureaux</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-700 pt-8 md:flex md:items-center md:justify-between">
+                <div class="flex space-x-6 md:order-2">
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <span class="sr-only">Facebook</span>
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <span class="sr-only">Instagram</span>
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <span class="sr-only">Twitter</span>
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <span class="sr-only">LinkedIn</span>
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+                <p class="mt-8 text-base text-gray-400 md:mt-0 md:order-1">
+                    &copy; 2023 AfriTrend. Tous droits réservés.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Sample trends data
+        const trendsData = [
+            {
+                id: 1,
+                name: "Noix de cajou",
+                category: "Agriculture",
+                country: "Bénin",
+                trend: "up",
+                percentage: 25,
+                description: "Demande croissante sur les marchés internationaux avec une production en hausse au Bénin.",
+                image: "https://images.unsplash.com/photo-1603569283842-62d13121a0a3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+            },
+            {
+                id: 2,
+                name: "Tissus Wax",
+                category: "Textile",
+                country: "Côte d'Ivoire",
+                trend: "up",
+                percentage: 18,
+                description: "Popularité croissante des motifs traditionnels avec une exportation en hausse vers l'Europe.",
+                image: "https://images.unsplash.com/photo-1520367445093-50dc08a59d9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+            },
+            {
+                id: 3,
+                name: "Smartphones bas prix",
+                category: "Technologie",
+                country: "Nigeria",
+                trend: "up",
+                percentage: 32,
+                description: "Demande en forte croissance pour les smartphones à moins de 100 000 FCFA.",
+                image: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+            },
+            {
+                id: 4,
+                name: "Beurre de karité",
+                category: "Cosmétique",
+                country: "Ghana",
+                trend: "up",
+                percentage: 22,
+                description: "Produit naturel très prisé pour les soins de la peau et des cheveux.",
+                image: "https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+            },
+            {
+                id: 5,
+                name: "Riz local",
+                category: "Alimentaire",
+                country: "Sénégal",
+                trend: "steady",
+                percentage: 5,
+                description: "Consommation stable avec une légère préférence pour les produits locaux.",
+                image: "https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+            },
+            {
+                id: 6,
+                name: "Poisson fumé",
+                category: "Alimentaire",
+                country: "Bénin",
+                trend: "down",
+                percentage: -8,
+                description: "Légère baisse due à la concurrence des produits surgelés importés.",
+                image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+            }
+        ];
+
+        // Function to render trends
+        function renderTrends(filteredData) {
+            const container = document.getElementById('trends-container');
+            container.innerHTML = '';
+            
+            filteredData.forEach(trend => {
+                const trendElement = document.createElement('div');
+                trendElement.className = 'bg-white overflow-hidden shadow rounded-lg trend-card transition-all duration-300';
+                
+                const trendColor = trend.trend === 'up' ? 'text-green-600' : trend.trend === 'down' ? 'text-red-600' : 'text-yellow-600';
+                const trendIcon = trend.trend === 'up' ? 'fa-arrow-up' : trend.trend === 'down' ? 'fa-arrow-down' : 'fa-arrows-alt-h';
+                
+                trendElement.innerHTML = `
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-blue-100 rounded-md p-3">
+                                <i class="fas ${getCategoryIcon(trend.category)} text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 truncate">${trend.category} • ${trend.country}</dt>
+                                    <dd>
+                                        <div class="text-lg font-medium text-gray-900">${trend.name}</div>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="flex items-center">
+                                <span class="${trendColor} text-sm font-semibold">
+                                    <i class="fas ${trendIcon} mr-1"></i> ${trend.percentage > 0 ? '+' : ''}${trend.percentage}%
+                                </span>
+                                <span class="text-gray-500 text-sm ml-2">au cours du dernier mois</span>
+                            </div>
+                            <p class="mt-2 text-sm text-gray-500">${trend.description}</p>
+                        </div>
+                        <div class="mt-4">
+                            <img src="${trend.image}" alt="${trend.name}" class="w-full h-40 object-cover rounded-md">
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(trendElement);
+            });
+        }
+
+        // Function to get category icon
+        function getCategoryIcon(category) {
+            switch(category) {
+                case 'Agriculture': return 'fa-seedling';
+                case 'Textile': return 'fa-tshirt';
+                case 'Technologie': return 'fa-mobile-alt';
+                case 'Cosmétique': return 'fa-spa';
+                case 'Alimentaire': return 'fa-utensils';
+                default: return 'fa-box';
+            }
+        }
+
+        // Initial render
+        renderTrends(trendsData);
+
+        // Filter functionality
+        document.getElementById('country-select').addEventListener('change', filterTrends);
+        document.getElementById('sector-select').addEventListener('change', filterTrends);
+
+        function filterTrends() {
+            const country = document.getElementById('country-select').value;
+            const sector = document.getElementById('sector-select').value;
+            
+            let filteredData = trendsData;
+            
+            if (country !== 'all') {
+                filteredData = filteredData.filter(trend => 
+                    trend.country.toLowerCase() === country || 
+                    (country === 'benin' && trend.country.toLowerCase().includes('bénin'))
+                );
+            }
+            
+            if (sector !== 'all') {
+                filteredData = filteredData.filter(trend => 
+                    trend.category.toLowerCase() === sector
+                );
+            }
+            
+            renderTrends(filteredData);
+        }
+
+        // Load more functionality
+        document.getElementById('load-more').addEventListener('click', function() {
+            // In a real app, this would fetch more data from an API
+            const spinner = document.createElement('div');
+            spinner.className = 'animate-pulse text-gray-500 text-center py-4';
+            spinner.innerHTML = 'Chargement des tendances supplémentaires...';
+            document.getElementById('trends-container').appendChild(spinner);
+            
+            setTimeout(() => {
+                spinner.remove();
+                // Simulate adding more data
+                const newTrends = [
+                    {
+                        id: 7,
+                        name: "Énergie solaire",
+                        category: "Technologie",
+                        country: "Bénin",
+                        trend: "up",
+                        percentage: 45,
+                        description: "Demande explosive pour les kits solaires domestiques avec les coupures d'électricité.",
+                        image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                    },
+                    {
+                        id: 8,
+                        name: "Cosmétiques naturels",
+                        category: "Cosmétique",
+                        country: "Sénégal",
+                        trend: "up",
+                        percentage: 28,
+                        description: "Préférence croissante pour les produits de beauté à base d'ingrédients naturels africains.",
+                        image: "https://images.unsplash.com/photo-1595343104933-9c40c5d3a539?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                    }
+                ];
+                
+                newTrends.forEach(trend => trendsData.push(trend));
+                filterTrends();
+            }, 1500);
+        });
+
+        // Form submission
+        document.getElementById('product-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('product-name').value,
+                description: document.getElementById('product-description').value,
+                category: document.getElementById('product-category').value,
+                country: document.getElementById('product-country').value,
+                price: document.getElementById('product-price').value,
+                contact: document.getElementById('contact-info').value
+            };
+            
+            // In a real app, this would send data to a server
+            console.log('Product submitted:', formData);
+            
+            // Show success message
+            alert('Votre produit a été soumis avec succès! Il sera examiné et publié sous 24 heures.');
+            this.reset();
+        });
+
+        // Initialize map (simplified for demo)
+        function initMap() {
+            const mapElement = document.getElementById('map');
+            
+            // In a real app, this would use Google Maps or similar API
+            mapElement.innerHTML = `
+                <div class="bg-gray-200 h-full w-full flex items-center justify-center rounded-lg">
+                    <div class="text-center p-6">
+                        <i class="fas fa-map-marked-alt text-4xl text-blue-600 mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900">Carte des tendances en Afrique</h3>
+                        <p class="mt-2 text-gray-600">Visualisation des produits tendance par région</p>
+                        <div class="mt-4">
+                            <div class="inline-flex items-center bg-white px-3 py-1 rounded-full text-sm font-medium text-gray-800">
+                                <span class="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+                                Forte demande
+                            </div>
+                            <div class="inline-flex items-center bg-white px-3 py-1 rounded-full text-sm font-medium text-gray-800 ml-2">
+                                <span class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+                                Demande moyenne
+                            </div>
+                            <div class="inline-flex items-center bg-white px-3 py-1 rounded-full text-sm font-medium text-gray-800 ml-2">
+                                <span class="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+                                Demande faible
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Search functionality
+        document.getElementById('search-button').addEventListener('click', function() {
+            const searchTerm = document.getElementById('product-search').value.toLowerCase();
+            
+            if (searchTerm.trim() === '') {
+                renderTrends(trendsData);
+                return;
+            }
+            
+            const filteredData = trendsData.filter(trend => 
+                trend.name.toLowerCase().includes(searchTerm) || 
+                trend.description.toLowerCase().includes(searchTerm) ||
+                trend.category.toLowerCase().includes(searchTerm)
+            );
+            
+            renderTrends(filteredData);
+        });
+
+        // Image search functionality
+        document.getElementById('image-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('image-preview').src = event.target.result;
+                    document.getElementById('image-preview').style.display = 'block';
+                    document.getElementById('file-label').textContent = file.name;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('search-image-button').addEventListener('click', function() {
+            const fileInput = document.getElementById('image-upload');
+            
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Veuillez sélectionner une image avant de rechercher');
+                return;
+            }
+            
+            // In a real app, this would send the image to a server for analysis
+            // and return similar products based on image recognition
+            
+            // For demo purposes, we'll just show all products
+            alert('Recherche par image effectuée. Dans une application réelle, cela enverrait l\'image à un serveur pour analyse et retournerait des produits similaires.');
+            renderTrends(trendsData);
+        });
+
+        // Search tabs functionality
+        document.getElementById('text-search-tab').addEventListener('click', function() {
+            document.getElementById('text-search').classList.remove('hidden');
+            document.getElementById('image-search').classList.add('hidden');
+            document.getElementById('text-search-tab').classList.add('active');
+            document.getElementById('image-search-tab').classList.remove('active');
+        });
+
+        document.getElementById('image-search-tab').addEventListener('click', function() {
+            document.getElementById('text-search').classList.add('hidden');
+            document.getElementById('image-search').classList.remove('hidden');
+            document.getElementById('text-search-tab').classList.remove('active');
+            document.getElementById('image-search-tab').classList.add('active');
+        });
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+        });
+    </script>
+</body>
+</html>
